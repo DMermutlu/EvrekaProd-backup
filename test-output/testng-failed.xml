@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [All Test Suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="/Users/dogukanmermutlu/IdeaProjects/EvrekaProd(failed)">
+    <classes>
+      <class name="com.evreka.TestCases">
+        <methods>
+          <include name="afterClass"/>
+          <include name="addNewEmployee" invocation-numbers="0">
+            <parameter name="employeeName" value="QA AutoTestEmployee-94"/>
+            <parameter name="employeeId" value="7794"/>
+            <parameter name="employeePhoneNumber" value="05301221223"/>
+            <parameter name="employeeCode" value="7794"/>
+          </include> <!-- addNewEmployee -->
+          <include name="beforeMethod"/>
+          <include name="addAsset" invocation-numbers="0">
+            <parameter name="atikTipiField" value="4"/>
+            <parameter name="assetName" value="AutomationTest Bin 22Sep-22"/>
+            <parameter name="brandField" value="BrandAutomationTest Bin 22Sep-22"/>
+            <parameter name="tagUid" value="22"/>
+          </include> <!-- addAsset -->
+          <include name="addNewShift" invocation-numbers="0">
+            <parameter name="lStartTime" value="16:16"/>
+            <parameter name="length" value="11"/>
+            <parameter name="shiftName" value="test024"/>
+            <parameter name="eStartTime" value="15:15"/>
+          </include> <!-- addNewShift -->
+        </methods>
+      </class> <!-- com.evreka.TestCases -->
+    </classes>
+  </test> <!-- /Users/dogukanmermutlu/IdeaProjects/EvrekaProd(failed) -->
+</suite> <!-- Failed suite [All Test Suite] -->

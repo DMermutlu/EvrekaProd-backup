@@ -1,0 +1,1190 @@
+Index: src/test/java/com/evreka/TestCases.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/evreka/TestCases.java b/src/test/java/com/evreka/TestCases.java
+new file mode 100644
+--- /dev/null	(date 1632385463018)
++++ b/src/test/java/com/evreka/TestCases.java	(date 1632385463018)
+@@ -0,0 +1,370 @@
++package com.evreka;
++
++import base.Base;
++import component.AssetManagementPage;
++import component.DashboardPage;
++import component.LoginPage;
++import component.ResourceManagementPage;
++import org.openqa.selenium.Keys;
++import org.openqa.selenium.interactions.Actions;
++import org.openqa.selenium.support.ui.Select;
++import org.testng.Assert;
++import org.testng.annotations.*;
++
++import java.io.IOException;
++import java.nio.file.Files;
++import java.nio.file.Path;
++
++public class TestCases extends Base {
++    String newRegionName = "";
++    String newDeviceName = "";
++    String newDevicDeviceName = "";
++
++
++    @BeforeTest
++    public void beforeMethod() throws InterruptedException {
++        super.beforeMethod();
++    }
++
++    @Test(priority = 1)
++    void verifyLogin() throws InterruptedException {
++        try {
++            Files.delete(Path.of("/Users/dogukanmermutlu/IdeaProjects/EvrekaProd/test-output/emailable-report.html"));
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            dashboardPage.findLogOutButton().isSelected();
++        } catch (Exception e) {
++            e.printStackTrace();
++        }
++        afterMethod();
++
++    }
++
++    @Test(priority = 2)
++    void verifyLogout() throws InterruptedException {
++        beforeMethod();
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            LoginPage loginPage = new LoginPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findLogOutButton().click();
++            Thread.sleep(4000);
++            loginPage.findLoginButton().isSelected();
++        } catch (Exception e) {
++            e.printStackTrace();
++        }
++        afterMethod();
++    }
++
++    @Test(priority = 3)
++    @Parameters({"regionName"})
++    void addNewRegion(String newRegionName) throws InterruptedException {
++        beforeMethod();
++        this.newRegionName = newRegionName;
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findResourceManagementTab().click(); /*click on the resource management tab*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewRegionButton().click(); /*click on the add new region button*/
++            Thread.sleep(5000);
++            resourceManagementPage.findNewRegionNameField().sendKeys(newRegionName); /*fill the region name*/
++            Thread.sleep(2000);
++            resourceManagementPage.findAddNewRegionQA2Operation().click(); /*select the QA Operation 2 as operation*/
++            Thread.sleep(2000);
++            resourceManagementPage.findNewRegionSaveButton().click(); /*click on the save button*/
++            Thread.sleep(5000);
++            boolean displayError = resourceManagementPage.findError().isDisplayed();
++            String message = resourceManagementPage.findErrorMessage().getText();
++
++            if (displayError == true) {
++
++                Assert.assertFalse(true, message);
++            }
++
++            /*The next steps are to check the added value*/
++            resourceManagementPage.findSearchBarRegionName().sendKeys(newRegionName);
++            Thread.sleep(5000);
++            String actualRegionName = resourceManagementPage.findSearcedRegionName().getText();
++            String expectedRegionName = newRegionName;
++            Assert.assertEquals(actualRegionName, expectedRegionName);
++
++
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++        afterMethod();
++
++
++    }
++
++    @Test(priority = 4)
++    @Parameters({"deviceId", "deviceName"})
++    void addNewDevice(String deviceId, String deviceName) throws InterruptedException {
++        beforeMethod();
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findResourceManagementTab().click();/*click on the resource management tab*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewDeviceButton().click();/*click on the add new device button*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewDeviceId().sendKeys(deviceId); /*fill the device id*/
++            resourceManagementPage.findAddNewDeviceName().sendKeys(deviceName);/*fill the device name*/
++            Select selectType = new Select(resourceManagementPage.findAddNewDeviceTypeCombobox());
++            selectType.selectByIndex(1); /*select device type */
++            Thread.sleep(5000);
++            Select selectClient = new Select(resourceManagementPage.findAddNewDeviceClientCombobox());
++            selectClient.selectByIndex(1); /*select device client*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewDeviceSaveButton().click(); /*click on the save button*/
++            Thread.sleep(5000);
++            boolean displayError = resourceManagementPage.findError().isDisplayed();
++            String message = resourceManagementPage.findErrorMessage().getText();
++
++            if (displayError == true) {
++
++                Assert.assertFalse(true, message);
++            }
++
++            /*The next steps are to check the added value*/
++            resourceManagementPage.findSearchBarDeviceName().sendKeys(deviceName);
++            Thread.sleep(2000);
++            String actualDeviceName = resourceManagementPage.findSearchedDeviceName().getText();
++            Thread.sleep(2000);
++            String expectedDeviceName = deviceName;
++            Assert.assertEquals(actualDeviceName, expectedDeviceName);
++            this.newDeviceName = deviceName;
++
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++        afterMethod();
++
++    }
++
++    @Test(priority = 5)
++    @Parameters({"vehicleId", "vehiclePlate"})
++    void addNewVehicle(Integer newVehicleId, String newVehiclePlate) throws InterruptedException {
++        beforeMethod();
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findResourceManagementTab().click();/*Click on the resouurce management tab*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewVehicleButton().click();/*click on the add new vehicle button*/
++            Thread.sleep(5000);
++            resourceManagementPage.findAddNewVehicleIdField().sendKeys(String.valueOf(newVehicleId));/*fill the vehicle id*/
++            resourceManagementPage.findAddNewVehiclePlateField().sendKeys(newVehiclePlate);/*fill the vehicle plate*/
++            Thread.sleep(5000);
++
++            Select selectClient = new Select(resourceManagementPage.findAddNewVehicleClientCombobox());
++            selectClient.selectByIndex(1);
++
++            Select selectTablet = new Select(resourceManagementPage.findAddNewVehicleTabletCombobox());
++            selectTablet.selectByVisibleText(newDeviceName);
++            Thread.sleep(3000);
++
++            Select selectDataSource = new Select(resourceManagementPage.findAddNewVehicleDataSourceCombobox());
++            selectDataSource.selectByIndex(2);
++            Thread.sleep(3000);
++            resourceManagementPage.findAddNewVehicleGeneralWasteOperation().click();
++            resourceManagementPage.findAddNewVehicleSaveButton().click();
++            Thread.sleep(3000);
++
++            boolean displayError = resourceManagementPage.findError().isDisplayed();
++            String message = resourceManagementPage.findErrorMessage().getText();
++            if (displayError == true) {
++                Assert.assertFalse(true, message);
++            }
++
++            /*The next steps are to check the added value*/
++            resourceManagementPage.findSearchBarVehicles().sendKeys(newVehiclePlate);
++            Thread.sleep(2000);
++            String actualVehiclePlate = resourceManagementPage.findSearchedVehiclePlate().getText();
++            String expectedVehiclePlate = newVehiclePlate;
++            Assert.assertEquals(actualVehiclePlate, expectedVehiclePlate);
++
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++        afterMethod();
++    }
++
++    @Test(priority = 6)
++    @Parameters({"employeeId", "employeeName", "employeeCode", "employeePhoneNumber"})
++    void addNewEmployee(Integer employeeId, String employeeName, Integer employeeCode, String employeePhoneNumber) throws InterruptedException {
++        beforeMethod();
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findResourceManagementTab().click(); /*click on the resource management tab */
++            Thread.sleep(2000);
++            resourceManagementPage.findAddNewEmployeeButton().click(); /*click on the add new employee button*/
++            Thread.sleep(2000);
++            Select selectEmployeeType = new Select(resourceManagementPage.findAddNewEmployeeTypeCombobox());
++            Thread.sleep(2000);
++            selectEmployeeType.selectByIndex(1); /*Select crew member as type*/
++            resourceManagementPage.findAddNewEmployeeIdField().sendKeys(String.valueOf(employeeId));
++            resourceManagementPage.findAddNewEmployeeNameField().sendKeys(employeeName);
++            resourceManagementPage.findAddNewEmployeeCodeField().sendKeys(String.valueOf(employeeCode));
++            Thread.sleep(2000);
++            Select selectEmployeeTable = new Select(resourceManagementPage.findAddNewEmployeeTabletCombobox());
++            Thread.sleep(2000);
++            selectEmployeeTable.selectByVisibleText(newDeviceName);
++            Thread.sleep(2000);
++            Select selectEmployeeDataSource = new Select(resourceManagementPage.findAddNewEmployeeDataSourceCombobox());
++            Thread.sleep(2000);
++            selectEmployeeDataSource.selectByIndex(1); /*select by tablet as data source*/
++            Thread.sleep(2000);
++            resourceManagementPage.findAddNewEmployeeGeneralWasteOperation().click(); /*select by general waste operation as operation*/
++            Thread.sleep(2000);
++            resourceManagementPage.findAddNewEmployeePhoneNumberField().sendKeys(employeePhoneNumber);
++            Thread.sleep(2000);
++            resourceManagementPage.findAddNewEmployeeSaveButton().click();
++            Thread.sleep(2000);
++
++            boolean displayError = resourceManagementPage.findError().isDisplayed();
++            String message = resourceManagementPage.findErrorMessage().getText();
++            if (displayError == true) {
++                Assert.assertFalse(true, message);
++            }
++
++            /*The next steps are to check the added value*/
++            resourceManagementPage.findSearchBarEmployeeName().sendKeys(employeeName);
++            Thread.sleep(2000);
++            String actualEmployeeName = resourceManagementPage.findSearcedEmployeeName().getText();
++            Thread.sleep(2000);
++            String expectedEmployeeName = employeeName;
++            Assert.assertEquals(actualEmployeeName, expectedEmployeeName);
++
++
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++
++    }
++
++    @Test(priority = 7)
++    @Parameters({"shiftName", "eStartTime", "lStartTime", "length"})
++    void addNewShift(String shiftName, String eStartTime, String lStartTime, Integer length) throws InterruptedException {
++        beforeMethod();
++
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findResourceManagementTab().click();
++            Thread.sleep(3000);
++            resourceManagementPage.findAddNewShiftButton().click();
++            Thread.sleep(3000);
++            resourceManagementPage.findAddNewShiftNameField().sendKeys(shiftName);
++            resourceManagementPage.findAddNewShiftEStartTimeField().sendKeys(eStartTime);
++            resourceManagementPage.findAddNewShiftLStartTimeField().sendKeys(lStartTime);
++            resourceManagementPage.findAddNewShiftLengthField().sendKeys(String.valueOf(length));
++            resourceManagementPage.findAddNewShiftSaveButton().click();
++            Thread.sleep(5000);
++
++            boolean displayError = resourceManagementPage.findError().isDisplayed();
++            String message = resourceManagementPage.findErrorMessage().getText();
++            if (displayError == true) {
++                Assert.assertFalse(true, message);
++            }
++
++            /*The next steps are to check the added value*/
++            resourceManagementPage.findSearchBarShiftName().sendKeys(shiftName);
++            Thread.sleep(2000);
++            String actualshiftName = resourceManagementPage.findSearchedShiftName().getText();
++            Thread.sleep(2000);
++            String expectedshiftName = shiftName;
++            Assert.assertEquals(actualshiftName, expectedshiftName);
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++
++
++        afterMethod();
++
++    }
++
++    @Test(priority = 8)
++    @Parameters({"assetName", "tagUid", "brandField", "atikTipiField"})
++    void addAsset(String assetName, String tagUid, String brandField, String atikTipiField) throws InterruptedException {
++        beforeMethod();
++        try {
++            DashboardPage dashboardPage = new DashboardPage(driver);
++            ResourceManagementPage resourceManagementPage = new ResourceManagementPage(driver);
++            AssetManagementPage assetManagementPage = new AssetManagementPage(driver);
++            Thread.sleep(5000);
++            dashboardPage.findAssetManagementTab().click();
++            Thread.sleep(5000);
++            assetManagementPage.findAddAssetButton().click();
++            Thread.sleep(5000);
++            assetManagementPage.findAddAssetNameField().sendKeys(assetName);
++            assetManagementPage.findAddAssetTagUidField().sendKeys(tagUid);
++            assetManagementPage.findAddAssetLocationField().click();
++            assetManagementPage.selectionToMap().click();
++            assetManagementPage.findAddAssetTypeCombobox().click();
++            Thread.sleep(2000);
++            Actions down = new Actions(driver);
++            down.sendKeys(Keys.chord(Keys.ENTER)).perform();
++            Thread.sleep(3000);
++            /*assetManagementPage.findAddAssetBrandField().sendKeys(brandField);*/
++            assetManagementPage.findAddAssetAtikTipiField().sendKeys(atikTipiField);
++            Thread.sleep(2000);
++            assetManagementPage.findAddAssetSubmitButton().click();
++            Thread.sleep(2000);
++            /*The next steps are to check the added value*/
++            assetManagementPage.findSearchBarAssetName().sendKeys(assetName);
++            Thread.sleep(2000);
++            String actualassetName = assetManagementPage.findSearchedAssetName().getText();
++            String expectedassetName = assetName;
++            Thread.sleep(10000);
++            Assert.assertEquals(actualassetName, expectedassetName);
++
++
++        } catch (InterruptedException e) {
++            e.printStackTrace();
++        }
++
++
++    }
++
++//    (timeOut = 10000)
++//    void mail()  {
++//        try {
++//            SendMail.sendMail();
++//        } catch (Exception e) {
++//            e.printStackTrace();
++//        }
++//    }
++
++    @AfterClass()
++    public void afterClass() throws InterruptedException {
++//        try {
++//            SendMail.sendMail();
++//        } catch (Exception e) {
++//            e.printStackTrace();
++//        }
++
++//        super.afterClass();
++//
++//        }
++//    @AfterSuite()
++//    public void afterSuite throws InterruptedException{
++//        super.afterSuite();
++//
++//    }
++
++//    SendMail tempa = new SendMail();
++//    tempa.sendMail();
++
++    }
++}
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+--- /dev/null	(date 1632388880816)
++++ b/pom.xml	(date 1632388880816)
+@@ -0,0 +1,102 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0"
++         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++
++    <groupId>org.example</groupId>
++    <artifactId>EvrekaProd</artifactId>
++    <version>1.0-SNAPSHOT</version>
++
++    <properties>
++        <maven.compiler.source>16</maven.compiler.source>
++        <maven.compiler.target>16</maven.compiler.target>
++    </properties>
++    <dependencies>
++        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
++        <dependency>
++            <groupId>org.seleniumhq.selenium</groupId>
++            <artifactId>selenium-java</artifactId>
++            <version>3.141.59</version>
++        </dependency>
++
++        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver -->
++        <dependency>
++            <groupId>org.seleniumhq.selenium</groupId>
++            <artifactId>selenium-chrome-driver</artifactId>
++            <version>3.141.59</version>
++        </dependency>
++        <dependency>
++            <groupId>org.testng</groupId>
++            <artifactId>testng</artifactId>
++            <version>RELEASE</version>
++            <scope>test</scope>
++        </dependency>
++        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
++        <!--<dependency>
++            <groupId>org.testng</groupId>
++            <artifactId>testng</artifactId>
++            <version>7.3.0</version>
++            <scope>test</scope>
++        </dependency>-->
++        <!-- https://mvnrepository.com/artifact/org.uncommons/reportng -->
++        <!-- https://mvnrepository.com/artifact/org.uncommons/reportng -->
++        <dependency>
++            <groupId>org.uncommons</groupId>
++            <artifactId>reportng</artifactId>
++            <version>1.1.4</version>
++            <scope>test</scope>
++        </dependency>
++
++        <dependency>
++            <groupId>com.google.inject</groupId>
++            <artifactId>guice</artifactId>
++            <version>5.0.1</version>
++        </dependency>
++        <dependency>
++            <groupId>junit</groupId>
++            <artifactId>junit</artifactId>
++            <version>4.12</version>
++            <scope>test</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.testng</groupId>
++            <artifactId>testng</artifactId>
++            <version>7.4.0</version>
++            <scope>compile</scope>
++        </dependency>
++        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
++        <dependency>
++            <groupId>org.apache.maven.plugins</groupId>
++            <artifactId>maven-surefire-plugin</artifactId>
++            <version>3.0.0-M5</version>
++        </dependency>
++        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
++        <dependency>
++            <groupId>org.apache.maven.plugins</groupId>
++            <artifactId>maven-surefire-report-plugin</artifactId>
++            <version>3.0.0-M5</version>
++        </dependency>
++
++        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
++        <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-email</artifactId>
++            <version>1.5</version>
++        </dependency>
++
++        <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
++        <dependency>
++            <groupId>javax.mail</groupId>
++            <artifactId>mail</artifactId>
++            <version>1.4.7</version>¨
++        </dependency>
++
++
++
++
++
++
++    </dependencies>
++
++</project>
+\ No newline at end of file
+Index: testng.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/testng.xml b/testng.xml
+new file mode 100644
+--- /dev/null	(date 1632314838387)
++++ b/testng.xml	(date 1632314838387)
+@@ -0,0 +1,50 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
++<suite name="All Test Suite">
++    <test verbose="2" preserve-order="true" name="/Users/dogukanmermutlu/IdeaProjects/EvrekaProd">
++        <classes>
++            <class name="com.evreka.TestCases">
++                <methods>
++                    <include name="verifyLogin"/>
++
++                    <include name="verifyLogout"/>
++
++                    <include name="addNewRegion">
++                        <parameter name="regionName" value="AutoTest-26"></parameter>
++                    </include>
++
++                    <include name="addNewDevice">
++                        <parameter name="deviceId" value="11:123:258:EVR"></parameter>
++                        <parameter name="deviceName" value="Auto Test Device - 26"></parameter>
++                    </include>
++
++                    <include name="addNewVehicle">
++                        <parameter name="vehicleId" value="999134"></parameter>
++                        <parameter name="vehiclePlate" value="06EVRK29"></parameter>
++                    </include>
++
++                    <include name="addNewEmployee">
++                        <parameter name="employeeId" value="7794"></parameter>
++                        <parameter name="employeeName" value="QA AutoTestEmployee-94"></parameter>
++                        <parameter name="employeeCode" value="7794"></parameter>
++                        <parameter name="employeePhoneNumber" value="05301221223"></parameter>
++                    </include>
++
++                    <include name="addNewShift">
++                        <parameter name="shiftName" value="test024"></parameter>
++                        <parameter name="eStartTime" value="15:15"></parameter>
++                        <parameter name="lStartTime" value="16:16"></parameter>
++                        <parameter name="length" value="11"></parameter>
++                    </include>
++
++                    <include name="addAsset">
++                        <parameter name="assetName" value="AutomationTest Bin 22Sep-22"></parameter>
++                        <parameter name="tagUid" value="22"></parameter>
++                        <parameter name="brandField" value="BrandAutomationTest Bin 22Sep-22"></parameter>
++                        <parameter name="atikTipiField" value="4"></parameter>
++                    </include>
++                </methods>
++            </class>
++        </classes>
++    </test>
++</suite>
+\ No newline at end of file
+Index: src/main/java/base/Base.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/base/Base.java b/src/main/java/base/Base.java
+new file mode 100644
+--- /dev/null	(date 1632315648624)
++++ b/src/main/java/base/Base.java	(date 1632315648624)
+@@ -0,0 +1,83 @@
++package base;
++
++import org.openqa.selenium.By;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.WebElement;
++import org.openqa.selenium.chrome.ChromeDriver;
++import org.openqa.selenium.support.ui.ExpectedConditions;
++import org.openqa.selenium.support.ui.Select;
++import org.openqa.selenium.support.ui.WebDriverWait;
++
++import org.testng.annotations.AfterSuite;
++
++
++import javax.mail.Folder;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.util.concurrent.TimeUnit;
++
++public class Base {
++    protected static WebDriver driver;
++    protected static WebDriverWait wait;
++
++    public void beforeMethod() throws InterruptedException {
++
++        /*Bu method login ol ve client olarak  */
++        System.setProperty("webdriver.chrome.driver", "/Users/dogukanmermutlu/IdeaProjects/EvrekaSingleCase/chromedriver");
++        driver = new ChromeDriver();
++        wait = new WebDriverWait(driver, 1000);
++        driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
++        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
++        driver.get("https://360.evreka.co/login/");
++        driver.manage().window().maximize();
++        driver.findElement(By.id("id_username")).sendKeys("qa-dogukan");
++        driver.findElement(By.id("id_password")).sendKeys("!Q2w3e4r");
++//        Thread.sleep(2000);
++        driver.findElement(By.xpath("/html/body/div/div/form/div[3]/div[2]/button")).click();/*click on the log-in button*/
++//        Thread.sleep(2000);
++        driver.findElement(By.xpath("//a[@role='button']")).click();
++        /*Select selectClient = new Select(driver.findElement(By.id("client_select_dropdown")));
++        Thread.sleep(2000);
++        selectClient.selectByVisibleText("BOOST CAMP:38");*/
++    }
++
++    protected void waitUntilClickableByElement(WebElement element) {
++
++        new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(element));
++    }
++
++    protected WebElement waitUntilVisibleByLocator(By locator) {
++
++        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
++    }
++
++    public void afterMethod() {
++        driver.quit();
++    }
++
++//    public void afterSuite() throws InterruptedException {
++//
++//        try {
++//            SendMail.sendMail();
++//        } catch (Exception e) {
++//            e.printStackTrace();
++//        }
++//
++//
++//    }
++
++    public void afterClass() throws InterruptedException {
++
++        Thread.sleep(5000);
++
++    }
++    public void afterSuite(){
++        try {
++            SendMail.sendMail();
++        } catch (Exception e) {
++            e.printStackTrace();
++        }
++    }
++}
++
+Index: src/main/java/component/AssetManagementPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/component/AssetManagementPage.java b/src/main/java/component/AssetManagementPage.java
+new file mode 100644
+--- /dev/null	(date 1632222976637)
++++ b/src/main/java/component/AssetManagementPage.java	(date 1632222976637)
+@@ -0,0 +1,78 @@
++package component;
++
++import org.openqa.selenium.By;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.WebElement;
++import org.openqa.selenium.support.PageFactory;
++
++public class AssetManagementPage {
++
++    WebDriver driver;
++
++    public AssetManagementPage(WebDriver driver) {
++        this.driver = driver;
++        PageFactory.initElements(this.driver, this);
++    }
++
++    public WebElement findAddAssetButton() {
++        By addAssetButton = By.xpath("//*[@id=\"root\"]/div[3]/div[3]/div/div/div[1]/div[2]/div/div[1]/div[1]/button");
++        return driver.findElement(addAssetButton);
++    }
++
++    public WebElement findAddAssetNameField() {
++        By addAssetNameField = By.xpath("//*[@id=\"root\"]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[1]/div[1]/input");
++        return driver.findElement(addAssetNameField);
++    }
++
++    public WebElement findAddAssetTagUidField() {
++        By addAssetTagUidField = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[2]/div[1]/input");
++        return driver.findElement(addAssetTagUidField);
++    }
++
++    public WebElement findAddAssetLocationField() {
++        By addAssetLocationField = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[3]/div[1]/input");
++        return driver.findElement(addAssetLocationField);
++    }
++
++    public WebElement selectionToMap() {
++        By selectionToMap = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[2]/div/div[2]/div");
++        return driver.findElement(selectionToMap);
++    }
++
++    public WebElement findAddAssetTypeCombobox() {
++        By addAssetTypeCombobox = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[4]/div/div/div[1]");
++        return driver.findElement(addAssetTypeCombobox);
++    }
++
++    public WebElement findAddAssetBrandField() {
++        By addAssetBrandField = By.xpath("//*[@id=\"root\"]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[5]/div/div[1]/div[1]/input");
++        return driver.findElement(addAssetBrandField);
++    }
++
++    public WebElement findAddAssetAtikKoduField() {
++        By addAssetAtikKoduField = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[5]/div/div[2]/div/input");
++        return driver.findElement(addAssetAtikKoduField);
++    }
++
++    public WebElement findAddAssetAtikTipiField() {
++        By addAssetAtikTipiField = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[5]/div/div/div[1]/input");
++        return driver.findElement(addAssetAtikTipiField);
++    }
++
++    public WebElement findAddAssetSubmitButton() {
++        By addAssetSubmitButton = By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div/form/div/div[7]/div/div/div[2]/button/div");
++        return driver.findElement(addAssetSubmitButton);
++    }
++
++    public WebElement findSearchBarAssetName() {
++        By searchBarAssetName = By.xpath("//th[2]//div[2]//input[1]");
++        return driver.findElement(searchBarAssetName);
++    }
++
++    public WebElement findSearchedAssetName() {
++        By searchedAssetName = By.xpath("//*[@id=\"root\"]/div[3]/div[3]/div/div/div[1]/div[2]/div/div[2]/table/tbody/tr[1]/td[2]");
++        return driver.findElement(searchedAssetName);
++    }
++
++
++}
+Index: src/main/java/base/SendMail.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/base/SendMail.java b/src/main/java/base/SendMail.java
+new file mode 100644
+--- /dev/null	(date 1632291958474)
++++ b/src/main/java/base/SendMail.java	(date 1632291958474)
+@@ -0,0 +1,109 @@
++package base;
++
++
++import javax.mail.*;
++import javax.mail.internet.InternetAddress;
++import javax.mail.internet.MimeBodyPart;
++import javax.mail.internet.MimeMessage;
++import javax.mail.internet.MimeMultipart;
++import javax.swing.table.TableRowSorter;
++import java.io.File;
++import java.io.IOException;
++import java.util.Properties;
++
++public  class SendMail {
++
++    public static void sendMail() throws Exception {
++
++
++
++/// Recipient's email ID needs to be mentioned.
++//        String to = "dogukanmermutlu@gmail.com";
++
++
++        String[] mailToId = {"dogukanmermutlu@gmail.com", "dogukanmer@gmail.com", "dogukanmermutlu@hotmail.com"};
++
++
++
++        // Sender's email ID needs to be mentioned
++        String from = "dogukanmermutlu@evreka.co";
++
++        // Assuming you are sending email from through gmails smtp
++        String host = "smtp.gmail.com";
++
++        // Get system properties
++        Properties properties = System.getProperties();
++
++        // Setup mail server
++        properties.put("mail.smtp.host", host);
++        properties.put("mail.smtp.port", "465");
++        properties.put("mail.smtp.ssl.enable", "true");
++        properties.put("mail.smtp.auth", "true");
++
++        // Get the Session object.// and pass
++        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
++
++            protected PasswordAuthentication getPasswordAuthentication() {
++
++                return new PasswordAuthentication("dogukanmermutlu@evreka.co", "Dogukanmer305181");
++
++            }
++
++        });
++        //session.setDebug(true);
++        try {
++            // Create a default MimeMessage object.
++            MimeMessage message = new MimeMessage(session);
++
++            // Set From: header field of the header.
++            message.setFrom(new InternetAddress(from));
++
++            // Set To: header field of the header.
++//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
++            for (int i = 0; i < mailToId.length; i++){
++                message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailToId[i]));
++            }
++
++            //            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
++//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to1));
++
++            // Set Subject: header field
++            message.setSubject("EVREKA - Automation Test Results");
++
++            Multipart multipart = new MimeMultipart();
++
++            MimeBodyPart attachmentPart = new MimeBodyPart();
++
++            MimeBodyPart textPart = new MimeBodyPart();
++
++            try {
++
++                File f = new File("/Users/dogukanmermutlu/IdeaProjects/EvrekaProd/test-output/emailable-report.html");
++
++                attachmentPart.attachFile(f);
++                textPart.setText("Automation test results in the prod environment are attached.");
++                multipart.addBodyPart(textPart);
++                multipart.addBodyPart(attachmentPart);
++
++            } catch (IOException e) {
++
++                e.printStackTrace();
++
++            }
++
++            message.setContent(multipart);
++
++            System.out.println("sending...");
++            // Send message
++            Transport.send(message);
++            System.out.println("Sent message successfully....");
++        } catch (MessagingException mex) {
++            mex.printStackTrace();
++        }
++
++    }
++
++
++}
++
++
+Index: src/main/java/component/LoginPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/component/LoginPage.java b/src/main/java/component/LoginPage.java
+new file mode 100644
+--- /dev/null	(date 1632229333112)
++++ b/src/main/java/component/LoginPage.java	(date 1632229333112)
+@@ -0,0 +1,20 @@
++package component;
++
++import org.openqa.selenium.By;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.WebElement;
++import org.openqa.selenium.support.PageFactory;
++
++public class LoginPage {
++
++    WebDriver driver;
++
++    public LoginPage (WebDriver driver){
++            this.driver = driver;
++            PageFactory.initElements(this.driver,this);
++        }
++    public WebElement findLoginButton(){
++            By loginButton = By.xpath("/html/body/div[1]/div/form/div[3]/div[2]/button");
++            return driver.findElement(loginButton);
++        }
++}
+Index: src/main/java/component/DashboardPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/component/DashboardPage.java b/src/main/java/component/DashboardPage.java
+new file mode 100644
+--- /dev/null	(date 1632213244827)
++++ b/src/main/java/component/DashboardPage.java	(date 1632213244827)
+@@ -0,0 +1,31 @@
++package component;
++
++import org.openqa.selenium.By;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.WebElement;
++import org.openqa.selenium.support.FindBy;
++import org.openqa.selenium.support.PageFactory;
++
++public class DashboardPage {
++    WebDriver driver;
++
++    public DashboardPage(WebDriver driver) {
++        this.driver = driver;
++        PageFactory.initElements(this.driver, this);
++    }
++
++    public WebElement findLogOutButton() {
++        By logoutButton = By.xpath("//span[normalize-space()='Log Out']");
++        return driver.findElement(logoutButton);
++    }
++
++    public WebElement findResourceManagementTab() {
++        By resourceManagementTab = By.xpath("//span[normalize-space()='Resource Management']");
++        return driver.findElement(resourceManagementTab);
++    }
++
++    public WebElement findAssetManagementTab() {
++        By assetManagementTab = By.xpath("//span[normalize-space()='Asset Management']");
++        return driver.findElement(assetManagementTab);
++    }
++}
+Index: src/main/java/component/ResourceManagementPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/component/ResourceManagementPage.java b/src/main/java/component/ResourceManagementPage.java
+new file mode 100644
+--- /dev/null	(date 1632207492701)
++++ b/src/main/java/component/ResourceManagementPage.java	(date 1632207492701)
+@@ -0,0 +1,255 @@
++package component;
++
++
++import org.openqa.selenium.By;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.WebElement;
++import org.openqa.selenium.support.PageFactory;
++
++public class ResourceManagementPage {
++
++    WebDriver driver;
++
++    public ResourceManagementPage(WebDriver driver) {
++        this.driver = driver;
++        PageFactory.initElements(this.driver, this);
++    }
++
++    public WebElement findAddNewRegionButton() {
++        By addNewRegionButton = By.xpath("/html/body/div[1]/div[1]/section/div[1]/div/div[4]/div/div/div[2]/div[2]/div[1]/a");
++        return driver.findElement(addNewRegionButton);
++    }
++
++    public WebElement findNewRegionNameField() {
++        By newRegioNameField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[1]/input[1]");
++        return driver.findElement(newRegioNameField);
++
++    }
++
++    public WebElement findAddNewRegionQA2Operation() {
++        By addNewRegionQA2Operation = By.xpath("//select[@ng-model='region.operations']//option[@value='number:13'][normalize-space()='QA Operation 2']");
++        return driver.findElement(addNewRegionQA2Operation);//*[@id="add-region-modal"]/div/div/div[2]/form/div[2]/select/option[1]
++    }
++
++    public WebElement findNewRegionSaveButton() {
++        By addNewRegionSaveButton = By.xpath("//button[@ng-click='addRegion(region, regionForm)']");
++        return driver.findElement(addNewRegionSaveButton);
++        /*//button[@ng-click='addRegion(region, regionForm)']
++        //*[@id="add-region-modal"]/div/div/div[3]/button[2]
++        /html/body/div[1]/div[1]/section/div[1]/div/div[4]/div/div/div[2]/div[3]/div/div/div[3]/button[2]*/
++    }
++
++    public WebElement findSearchBarRegionName() {
++        By searchBarRegionName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[1]/th[1]/input[1]");
++        return driver.findElement(searchBarRegionName);
++    }
++
++    public WebElement findSearcedRegionName() {
++        By searchedRegionName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[2]/td[1]/span[2]");
++        return driver.findElement(searchedRegionName);
++    }
++
++    public WebElement findError() {
++        By error = By.xpath("//*[@id=\"error_modal\"]/div/div/div[1]/h4");
++        return driver.findElement(error);
++    }
++
++    public WebElement findErrorMessage() {
++        By errorMessage = By.xpath("//*[@id=\"error_modal\"]/div/div/div[2]");
++        return driver.findElement(errorMessage);
++    }
++
++    public WebElement findAddNewDeviceButton() {
++        By addNewDeviceButton = By.xpath("/html/body/div[1]/div[1]/section/div[1]/div/div[3]/div/div/div[2]/div[2]/div[1]/a[1]");
++        return driver.findElement(addNewDeviceButton);
++    }
++
++    public WebElement findAddNewDeviceId() {
++        By addNewDeviceId = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[1]/input[1]");
++        return driver.findElement(addNewDeviceId);
++    }
++
++    public WebElement findAddNewDeviceName() {
++        By addNewDeviceName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[2]/input[1]");
++        return driver.findElement(addNewDeviceName);
++    }
++
++    public WebElement findAddNewDeviceTypeCombobox() {
++        By addNewDeviceTypeCombobox = By.xpath("//*[@id=\"add-device-modal\"]/div/div/div[2]/form/div[3]/select");
++        return driver.findElement(addNewDeviceTypeCombobox);
++
++    }
++
++    public WebElement findAddNewDeviceClientCombobox() {
++        By addNewDeviceClientCombobox = By.xpath("//*[@id=\"add-device-modal\"]/div/div/div[2]/form/div[4]/select");
++        return driver.findElement(addNewDeviceClientCombobox);
++    }
++
++    public WebElement findAddNewDeviceSaveButton() {
++        By addNewDeviceSaveButton = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[3]/button[2]");
++        return driver.findElement(addNewDeviceSaveButton);
++    }
++
++    public WebElement findSearchBarDeviceName() {
++        By searchBarDeviceName = By.xpath("//*[@id=\"devices_table\"]/tbody/tr[1]/th[2]/input");
++        return driver.findElement(searchBarDeviceName);
++    }
++
++    public WebElement findSearchedDeviceName() {
++        By searchedDeviceName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[2]/td[2]/span[1]");
++        return driver.findElement(searchedDeviceName);
++
++    }
++
++    public WebElement findAddNewVehicleButton() {
++        By addNewVehicleButton = By.xpath("/html/body/div[1]/div[1]/section/div[1]/div/div[2]/div/div/div[2]/div[2]/div[1]/a");
++        return driver.findElement(addNewVehicleButton);
++    }
++
++    public WebElement findAddNewVehicleIdField() {
++        By newVehicleIdField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[1]/input[1]");
++        return driver.findElement(newVehicleIdField);
++    }
++
++    public WebElement findAddNewVehiclePlateField() {
++        By newVehiclePlateField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[2]/input[1]");
++        return driver.findElement(newVehiclePlateField);
++    }
++
++    public WebElement findAddNewVehicleClientCombobox() {
++        By vehicleClientCombobox = By.id("vehicle_client");
++        return driver.findElement(vehicleClientCombobox);
++    }
++
++    public WebElement findAddNewVehicleTabletCombobox() {
++        By vehicleTabletCombobox = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[4]/select[1]");
++        return driver.findElement(vehicleTabletCombobox);
++    }
++
++    public WebElement findAddNewVehicleDataSourceCombobox() {
++        By newVehicleDataSourceCombobox = By.xpath("//*[@id=\"add-vehicle-modal\"]/div/div/div[2]/form/div[5]/select");
++        return driver.findElement(newVehicleDataSourceCombobox);
++    }
++
++    public WebElement findAddNewVehicleGeneralWasteOperation() {
++        By addNewVehicleGeneralWasteOperation = By.xpath("//*[@id=\"add-vehicle-modal\"]/div/div/div[2]/form/div[6]/select/option[1]");
++        return driver.findElement(addNewVehicleGeneralWasteOperation);
++    }
++
++    public WebElement findAddNewVehicleSaveButton() {
++        By addNewVehicleSaveButton = By.xpath("//*[@id=\"add-vehicle-modal\"]/div/div/div[3]/button[2]");
++        return driver.findElement(addNewVehicleSaveButton);
++    }
++
++    public WebElement findSearchBarVehicles() {
++        By searchBarVehicles = By.xpath("/html/body/div/div[1]/section/div[1]/div/div[2]/div/div/div[2]/table/tbody/tr[1]/th[2]/input");
++        return driver.findElement(searchBarVehicles);
++
++    }
++
++    public WebElement findSearchedVehiclePlate() {
++        By searchedVehiclePlate = By.xpath("/html/body/div/div[1]/section/div[1]/div/div[2]/div/div/div[2]/table/tbody/tr[2]/td[2]/span");
++        return driver.findElement(searchedVehiclePlate);
++    }
++
++    public WebElement findAddNewEmployeeButton() {
++        By addNewEmployeeButton = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[2]/div[1]/a[1]");
++        return driver.findElement(addNewEmployeeButton);
++    }
++
++    public WebElement findAddNewEmployeeTypeCombobox() {
++        By addNewEmployeeTypeCombobox = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[1]/select[1]");
++        return driver.findElement(addNewEmployeeTypeCombobox);
++    }
++
++    public WebElement findAddNewEmployeeIdField() {
++        By addNewEmployeeIdField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[2]/input[1]");
++        return driver.findElement(addNewEmployeeIdField);
++    }
++
++    public WebElement findAddNewEmployeeNameField() {
++        By addNewEmployeeNameField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[3]/input[1]");
++        return driver.findElement(addNewEmployeeNameField);
++    }
++
++    public WebElement findAddNewEmployeeCodeField() {
++        By addNewEmployeeCodeField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[4]/input[1]");
++        return driver.findElement(addNewEmployeeCodeField);
++    }
++
++    public WebElement findAddNewEmployeeTabletCombobox() {
++        By addNewEmployeeTabletCombobox = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[8]/select[1]");
++        return driver.findElement(addNewEmployeeTabletCombobox);
++    }
++
++    public WebElement findAddNewEmployeeDataSourceCombobox() {
++        By addNewEmployeeDataSourceCombobox = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[9]/select[1]");
++        return driver.findElement(addNewEmployeeDataSourceCombobox);
++    }
++
++    public WebElement findAddNewEmployeeGeneralWasteOperation() {
++        By addNewEmployeeGeneralWasteOperation = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[10]/select[1]/option[2]");
++        return driver.findElement(addNewEmployeeGeneralWasteOperation);
++    }
++
++    public WebElement findAddNewEmployeePhoneNumberField() {
++        By addNewEmployeePhoneNumberField = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/form[1]/div[11]/input[1]");
++        return driver.findElement(addNewEmployeePhoneNumberField);
++    }
++
++    public WebElement findAddNewEmployeeSaveButton() {
++        By addNewEmployeeSaveButton = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[3]/button[2]");
++        return driver.findElement(addNewEmployeeSaveButton);
++    }
++
++    public WebElement findSearchBarEmployeeName() {
++        By searchBarEmployeeName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[1]/th[2]/input[1]");
++        return driver.findElement(searchBarEmployeeName);
++    }
++
++    public WebElement findSearcedEmployeeName() {
++        By searchedEmployeeName = By.xpath("/html[1]/body[1]/div[1]/div[1]/section[1]/div[1]/div[1]/div[5]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[2]/td[2]/span[1]");
++        return driver.findElement(searchedEmployeeName);
++    }
++
++    public WebElement findAddNewShiftButton() {
++        By addNewShiftButton = By.xpath("//a[normalize-space()='+ Add New Shift']");
++        return driver.findElement(addNewShiftButton);
++    }
++
++    public WebElement findAddNewShiftNameField() {
++        By addNewShiftNameField = By.xpath("//input[@name='shift_name']");
++        return driver.findElement(addNewShiftNameField);
++    }
++
++    public WebElement findAddNewShiftEStartTimeField() {
++        By addNewShiftEStartTimeField = By.xpath("//input[@id='shift_start_time']");
++        return driver.findElement(addNewShiftEStartTimeField);
++    }
++
++    public WebElement findAddNewShiftLStartTimeField() {
++        By addNewShiftLStartTimeField = By.xpath("//input[@id='shift_end_time']");
++        return driver.findElement(addNewShiftLStartTimeField);
++    }
++
++    public WebElement findAddNewShiftLengthField() {
++        By addNewShiftLengthField = By.xpath("//input[@id='shift_length']");
++        return driver.findElement(addNewShiftLengthField);
++    }
++
++    public WebElement findAddNewShiftSaveButton() {
++        By addNewShiftSaveButton = By.xpath("//button[@ng-click='addShift(shift, shiftForm)']");
++        return driver.findElement(addNewShiftSaveButton);
++    }
++
++    public WebElement findSearchBarShiftName() {
++        By searchBarShiftName = By.xpath("//*[@id=\"shift_table\"]/tbody/tr[1]/th[2]/input");
++        return driver.findElement(searchBarShiftName);
++    }
++
++    public WebElement findSearchedShiftName() {
++        By searchedShiftName = By.xpath("/html/body/div[1]/div[1]/section/div[1]/div/div[6]/div/div/div[2]/table/tbody/tr[2]/td[2]");
++        return driver.findElement(searchedShiftName);
++    }
++
++}
