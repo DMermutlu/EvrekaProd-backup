@@ -14,7 +14,7 @@
                     </include>
 
                     <include name="addNewDevice">
-                        <parameter name="deviceId" value="11:123:260:EVR"></parameter>
+                        <parameter name="deviceId" value="11:123:261:EVR"></parameter>
                         <parameter name="deviceName" value="Auto Test Device - 28"></parameter>
                     </include>
 
