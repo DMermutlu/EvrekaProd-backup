@@ -41,7 +41,7 @@ public  class SendMail {
         properties.put("mail.smtp.auth", "true");
 
         // Get the Session object.// and pass
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+        Session session = Session.getInstance(properties, new Authenticator() {
 
             protected PasswordAuthentication getPasswordAuthentication() {
 
@@ -50,6 +50,7 @@ public  class SendMail {
             }
 
         });
+
         //session.setDebug(true);
         try {
             // Create a default MimeMessage object.

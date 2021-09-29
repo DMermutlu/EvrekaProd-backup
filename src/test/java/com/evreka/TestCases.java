@@ -28,11 +28,11 @@ public class TestCases extends Base {
 
     @Test(priority = 1)
     void verifyLogin() throws InterruptedException {
-        try {
-            Files.delete(Path.of("/Users/dogukanmermutlu/IdeaProjects/EvrekaProd/test-output/emailable-report.html"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Files.delete(Path.of("/Users/dogukanmermutlu/IdeaProjects/EvrekaProd/test-output/emailable-report.html"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         try {
             DashboardPage dashboardPage = new DashboardPage(driver);
             dashboardPage.findLogOutButton().isSelected();
